@@ -59,16 +59,12 @@ export function listIndexedWeixinAccountIds(): string[] {
   }
 }
 
-/** Add accountId to the persistent index (no-op if already present). */
+/** Register accountId as the sole account in the persistent index. */
 export function registerWeixinAccountId(accountId: string): void {
   const dir = resolveWeixinStateDir();
   fs.mkdirSync(dir, { recursive: true });
 
-  const existing = listIndexedWeixinAccountIds();
-  if (existing.includes(accountId)) return;
-
-  const updated = [...existing, accountId];
-  fs.writeFileSync(resolveAccountIndexPath(), JSON.stringify(updated, null, 2), "utf-8");
+  fs.writeFileSync(resolveAccountIndexPath(), JSON.stringify([accountId], null, 2), "utf-8");
 }
 
 // ---------------------------------------------------------------------------

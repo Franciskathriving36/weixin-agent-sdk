@@ -9,10 +9,28 @@
 ```
 packages/
   sdk/                  weixin-agent-sdk —— 微信桥接 SDK
+  agent-acp/            ACP (Agent Client Protocol) 适配器
   example-openai/       基于 OpenAI 的示例
 ```
 
-## 快速开始（OpenAI 示例）
+## ACP 适配器
+
+[ACP (Agent Client Protocol)](https://agentclientprotocol.com/) 是一个开放的 Agent 通信协议。如果你已有兼容 ACP 的 agent，可以直接通过 `agent-acp` 适配器接入微信，无需编写任何代码。
+
+```bash
+cd packages/agent-acp
+
+# 扫码登录
+npx tsx main.ts login
+
+# 启动（-- 后面跟 ACP agent 的启动命令）
+npx tsx main.ts start -- codex-acp
+npx tsx main.ts start -- kimi
+```
+
+`--` 后面的部分就是你的 ACP agent 启动命令，适配器会自动以子进程方式启动它，通过 JSON-RPC over stdio 进行通信。
+
+## OpenAI 示例
 
 ```bash
 # 安装依赖
@@ -146,7 +164,7 @@ await start(myAgent);
 
 - 使用 **长轮询** (`getUpdates`) 接收消息，无需公网服务器
 - 媒体文件通过微信 CDN 中转，**AES-128-ECB** 加密传输
-- 支持多账号（多次 `login` 后通过 `accountId` 区分）
+- 单账号模式：每次 `login` 覆盖之前的账号
 - 断点续传：`get_updates_buf` 持久化到 `~/.openclaw/`，重启后从上次位置继续
 - 会话过期自动重连（errcode -14 触发 1 小时冷却后恢复）
 - Node.js >= 22

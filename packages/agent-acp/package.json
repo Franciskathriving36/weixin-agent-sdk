@@ -1,8 +1,8 @@
 {
-  "name": "example-openai",
+  "name": "agent-acp",
   "version": "0.1.0",
   "private": true,
-  "description": "WeChat + OpenAI example using weixin-agent-sdk",
+  "description": "WeChat + ACP (Agent Client Protocol) adapter using weixin-agent-sdk",
   "type": "module",
   "scripts": {
     "login": "tsx main.ts login",
@@ -10,10 +10,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "openai": "^4.0.0",
+    "@agentclientprotocol/sdk": "^0.16.0",
     "weixin-agent-sdk": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "^22.0.0",
     "tsx": "^4.0.0",
     "typescript": "^5.8.0"
   }
